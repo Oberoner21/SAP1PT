@@ -7,10 +7,11 @@
 #define     SYMBOLS         4
 
 #define     RULE_RESET      0
-#define     RULE_FETCH      50
 
 #define     RULE_END        510
 #define     RULE_ERROR      511
+
+uint16_t rule_FETCH = 0;
 
 struct rule {
     int next;
@@ -91,6 +92,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 
 #include "rule_reset.h"
 #include "rule_fetch.h"
+#include "rule_decode.h"
 
 
 void generateRuleBook()
@@ -107,19 +109,10 @@ void generateRuleBook()
         rule++;
     }
 
-    rule = 0;
-    rule = GenerateRuleRESET(rule);
-    rule = RULE_FETCH;
-    rule = GenerateRuleFETCH(rule);
-
-
-
-
-
-
-
-
-
+    rule = RULE_RESET;
+    rule_FETCH = GenerateRuleRESET(rule);
+    rule = GenerateRuleFETCH(rule_FETCH);
+    rule = GenerateRuleDECODE(rule);
 
     //----------------- A + B ----------------------
 

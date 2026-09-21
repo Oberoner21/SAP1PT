@@ -14,7 +14,7 @@ uint16_t GenerateRuleRESET(uint16_t rule) {
     rule = next$RIGHT(rule);                        // Skip the Program counter
 
     rule = next$RIGHT(rule);                        // Skip the MAR an go to rule FETCH
-    SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);
+    SetRule(rule-1, '$', '$', LEFT, rule);
 
     return rule;
 }
