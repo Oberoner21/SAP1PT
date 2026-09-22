@@ -3,13 +3,26 @@
 
 #define     LEFT            -1
 #define     RIGHT           1
-#define     RULES           0x0200
+#define     RULES           0x0400
 #define     SYMBOLS         4
 
 #define     RULE_RESET      0
+#define     RULE_FETCH      10
+#define     RULE_DECODE     200
+#define     RULE_NOP        250
+#define     RULE_LDA        300
+#define     RULE_ADD        350
+#define     RULE_SUB        400
+#define     RULE_STA        450
+#define     RULE_LDI        500
+#define     RULE_JMP        550
+#define     RULE_JC         600
+#define     RULE_JZ         650
+#define     RULE_OUT        700
+#define     RULE_HLT        750
 
-#define     RULE_END        510
-#define     RULE_ERROR      511
+#define     RULE_END        0x3FE
+#define     RULE_ERROR      0x3FF
 
 uint16_t rule_FETCH = 0;
 
@@ -95,6 +108,8 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_reset.h"
 #include "rule_fetch.h"
 #include "rule_decode.h"
+#include "rule_ldi.h"
+#include "rule_sta.h"
 
 
 void generateRuleBook()
@@ -111,10 +126,11 @@ void generateRuleBook()
         rule++;
     }
 
-    rule = RULE_RESET;
-    rule_FETCH = GenerateRuleRESET(rule);
-    rule = GenerateRuleFETCH(rule_FETCH);
-    rule = GenerateRuleDECODE(rule);
+    GenerateRuleRESET(RULE_RESET);
+    GenerateRuleFETCH(RULE_FETCH);
+    GenerateRuleDECODE(RULE_DECODE);
+    GenerateRuleLDI(RULE_LDI);
+    GenerateRuleSTA(RULE_STA);
 
     //----------------- A + B ----------------------
 

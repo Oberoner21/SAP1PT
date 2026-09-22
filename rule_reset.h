@@ -1,7 +1,8 @@
 
-uint16_t GenerateRuleRESET(uint16_t rule) {
+void GenerateRuleRESET(uint16_t rule) {
 
-    // Entrypoint is notepad pointer position 0
+    // Entrypoint: NP pointer position: 0
+    // Exitpoint : NP pointer position: M0 (MAR bit 0)
 
     // ------------ Skip to position MAR0 -------------
 
@@ -13,8 +14,6 @@ uint16_t GenerateRuleRESET(uint16_t rule) {
     rule = next$RIGHT(rule);                        // Skip the Instruction Register
     rule = next$RIGHT(rule);                        // Skip the Program counter
 
-    rule = next$RIGHT(rule);                        // Skip the MAR an go to rule FETCH
-    SetRule(rule-1, '$', '$', LEFT, rule);
-
-    return rule;
+    rule = next$RIGHT(rule);                        // Skip the MAR and go to rule FETCH
+    SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);
 }

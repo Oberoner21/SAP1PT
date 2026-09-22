@@ -5,128 +5,64 @@ uint16_t PCtoMAR(uint16_t rule){
     // Entrypoint: NP pointer position: M0 (MAR bit 0)
     // Exitpoint : NP pointer position: P3 (PC bit 7)
 
+    uint8_t i, j;
+
     // ++++++++++++++++++++ Copy Program Counter to MAR +++++++++++++++++++++++++++
 
-    // Notepadpointer auf das $-Zeichen zwischen IR und Programmcounter
-
+    // Skip to PC and marke it
     rule = next$LEFT(rule);                     // Skip MAR
     rule = next$LEFT(rule);                     // Skip PC
-    SetRule(rule-1, '$', '_', RIGHT, rule);     // Mark the PC with '_'
+    SetRule(rule-1, '$', '_', RIGHT, rule);     // Mark the PC with '_' and go to right
 
-    // -------- Copy P3 to MAR 3 -------------
- 
-    SetRule(rule, '0', '0', RIGHT, rule+3);     // Read P3 and branch
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
+    for(i=0; i<4; i++){
 
-    // P3 is a 1
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
+        for(j=0; j<i; j++){
 
-    SetRule(rule, '0', '1', RIGHT, rule+3);     // Write 1 into M3
-    SetRule(rule, '1', '1', RIGHT, rule+3);  
-    rule++; 
+            // Skip PC bit and constant bit
+            rule = nextRIGHT(rule);             // Skip PC and next constant bit
+            rule = nextRIGHT(rule);         
+        }
 
-    // P3 is a 0
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
+        // Read current bit in PC and branch
+        SetRule(rule, '0', '0', RIGHT, rule+3+i);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
 
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Write 0 into M3
-    SetRule(rule, '1', '0', RIGHT, rule+1);  
-    rule++; 
+        // Readed bit was a 1
+        // Skip to M3
+        rule = next$RIGHT(rule); 
 
-    rule = next_LEFT(rule);                     // Back to PC-Mark, next right
+        for(j=0; j<i; j++){
 
-    // -------- Copy P2 to MAR 2 -------------
+            // Skip jx bit in MAR
+            rule = nextRIGHT(rule);  
+        }
 
-    rule = nextRIGHT(rule);                     // Skip P3
-    rule = nextRIGHT(rule);                     // Skip C3
+        // Write a 1 into current bit of MAR
+        SetRule(rule, '0', '1', RIGHT, rule+3+i);
+        SetRule(rule, '1', '1', RIGHT, rule+3+i);  
+        rule++;
 
-    SetRule(rule, '0', '0', RIGHT, rule+4);     // Read P2 and branch
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
+        // Readed bit was a 0
+        // Seek to M3
+        rule = next$RIGHT(rule); 
 
-    // P2 is a 1
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
+        for(j=0; j<i; j++){
 
-    SetRule(rule, '0', '1', RIGHT, rule+4);     // Write 1 into M2
-    SetRule(rule, '1', '1', RIGHT, rule+4);  
-    rule++; 
+            // Skip jx bit in MAR
+            rule = nextRIGHT(rule);  
+        }
 
-    // P2 is a 0
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
+        // Write a 0 into current bit of MAR
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '0', RIGHT, rule+1);  
+        rule++;
 
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Write 0 into M2
-    SetRule(rule, '1', '0', RIGHT, rule+1);  
-    rule++; 
+        // Jump back to P3 into the marked PC register
+        rule = next_LEFT(rule);
+    }
 
-    rule = next_LEFT(rule);                     // Back to PC-Mark
-
-    // -------- Copy P1 to MAR 1 -------------
-
-    rule = nextRIGHT(rule);                     // Skip P3
-    rule = nextRIGHT(rule);                     // Skip C3
-    rule = nextRIGHT(rule);                     // Skip P2
-    rule = nextRIGHT(rule);                     // Skip C2
-
-    SetRule(rule, '0', '0', RIGHT, rule+5);     // Read P1 and branch
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
-
-    // P1 is a 1
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
-    rule = nextRIGHT(rule);                     // Skip M2
-
-    SetRule(rule, '0', '1', RIGHT, rule+5);     // Write 1 into M1
-    SetRule(rule, '1', '1', RIGHT, rule+5);  
-    rule++; 
-
-    // P1 is a 0
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
-    rule = nextRIGHT(rule);                     // Skip M2
-
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Write 0 into M1
-    SetRule(rule, '1', '0', RIGHT, rule+1);  
-    rule++; 
-
-    rule = next_LEFT(rule);                     // Back to PC-Mark
-
-   // -------- Copy P0 to MAR 0 -------------
-
-    rule = nextRIGHT(rule);                     // Skip P3
-    rule = nextRIGHT(rule);                     // Skip C3
-    rule = nextRIGHT(rule);                     // Skip P2
-    rule = nextRIGHT(rule);                     // Skip C2
-    rule = nextRIGHT(rule);                     // Skip P1
-    rule = nextRIGHT(rule);                     // Skip C1
-
-    SetRule(rule, '0', '0', RIGHT, rule+6);     // Read P0 and branch
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
-
-    // P0 is a 1
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
-    rule = nextRIGHT(rule);                     // Skip M2
-    rule = nextRIGHT(rule);                     // Skip M1
-
-    SetRule(rule, '0', '1', RIGHT, rule+6);     // Write 1 into M0
-    SetRule(rule, '1', '1', RIGHT, rule+6);  
-    rule++; 
-
-    // P0 is a 0
-    rule = next$RIGHT(rule);                    // Skip the MAR, NPP is now on M3
-    rule = nextRIGHT(rule);                     // Skip M3
-    rule = nextRIGHT(rule);                     // Skip M2
-    rule = nextRIGHT(rule);                     // Skip M1
-
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Write 0 into M0
-    SetRule(rule, '1', '0', RIGHT, rule+1);  
-    rule++; 
-
-    rule = next_LEFT(rule);                     // Back to PC-Mark
+    // Change the last rule to remark PC
     SetRule(rule-1, '_', '$', RIGHT, rule);     // Remark PC
 
     return rule;
@@ -136,8 +72,8 @@ uint16_t PCtoMAR(uint16_t rule){
 // Increment the interleaved Programm counter
 uint16_t IncPC(uint16_t rule) {
 
-    // Entrypoint: Notepadpointer steht auf P3 des Program Counters
-    // Exitpoint:  Notepadpointer steht auf P3 des Program Counters
+    // Entrypoint: NP pointer position: P3 of Program Counter PC
+    // Exitpoint:  NP pointer position: P3 of Program Counter PC
 
     rule = next$RIGHT(rule, LEFT);                  // Skip to C1
     SetRule(rule-1, '$', '$', LEFT, rule+1);        // Next rule is NoCarry
@@ -169,10 +105,10 @@ uint16_t IncPC(uint16_t rule) {
 
 // Kopiert den Befehl (Bit 7 bis 4) aus der Speicherstelle, auf die
 // der PC zeigt in das Instruction Register IR
-uint16_t INSTtoIR(uint16_t rule){
+void INSTtoIR(uint16_t rule){
 
-    // Entrypoint: Notepadpointer steht auf P3 des Program Counters
-    // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
+    // Entrypoint: NP pointer position: P3 of Program Counter PC
+    // Exitpoint:  NP pointer position: I3 of Instruction Registers IR
 
     uint8_t i, j;  
 
@@ -247,29 +183,27 @@ uint16_t INSTtoIR(uint16_t rule){
 
     // ---- End of copy Instruction to IR ------
 
-    // Change the last rule for remark
-    // Skip back to the marker of market memory byte and remark
-    SetRule(rule-1, '_', '$', RIGHT, rule);
-    // 99 - Skip to the marker of the Instruction Register IR and remark it
+    // Change the last rule
+    // Skip back left to the marker of marked memory byte
+    SetRule(rule-1, '_', '_', LEFT, rule);
+    // Skip back right to the marker of the Instruction Register IR to I3
+    // and go to RULE_DECODE
     rule = next_LEFT(rule);
-    //SetRule(rule-1, '_', '$', RIGHT, rule);
-    SetRule(rule-1, '_', '$', RIGHT, RULE_END);
+    SetRule(rule-1, '_', '_', RIGHT, RULE_DECODE);
 
-    // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
-
-    return rule;
+    // Exitpoint:  NP pointer position: I3 of Instruction Registers IR
+    //             Mark of Instruction register IR and of the marked memory
+    //             are not cleared.
 }
 
 
-uint16_t GenerateRuleFETCH(uint16_t rule) {
+void GenerateRuleFETCH(uint16_t rule) {
 
-    // Entrypoint: Notepadpointer steht MAR0
+    // Entrypoint: NP pointer position: M0 of Memory Address Register MAR
 
-    rule = PCtoMAR(rule);          // Copy Program Counter into MAR
-    rule = IncPC(rule);            // Increment Program Counter
-    rule = INSTtoIR(rule);         // Copy the current instruction to Register IR
+    rule = PCtoMAR(rule);   // Copy Program Counter into MAR
+    rule = IncPC(rule);     // Increment Program Counter
+    INSTtoIR(rule);         // Copy the current instruction to Register IR
 
-    // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
-
-    return rule;
+    // Exitpoint:  NP pointer position: I3 of Instruction Registers IR
 }
