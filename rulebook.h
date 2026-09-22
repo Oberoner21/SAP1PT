@@ -90,6 +90,8 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
     return rule+1;
 }
 
+#include "rule_markMemByte.h"
+
 #include "rule_reset.h"
 #include "rule_fetch.h"
 #include "rule_decode.h"
