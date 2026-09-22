@@ -2,8 +2,8 @@
 // Kopiert den Wert des Programm counters in das Memory Address Register
 uint16_t PCtoMAR(uint16_t rule){
 
-    // Entrypoint: Notepadpointer steht MAR0
-    // Exitpoint: Programm counter P3
+    // Entrypoint: NP pointer position: M0 (MAR bit 0)
+    // Exitpoint : NP pointer position: P3 (PC bit 7)
 
     // ++++++++++++++++++++ Copy Program Counter to MAR +++++++++++++++++++++++++++
 
@@ -171,17 +171,15 @@ uint16_t IncPC(uint16_t rule) {
 // der PC zeigt in das Instruction Register IR
 uint16_t INSTtoIR(uint16_t rule){
 
-    // The comment numbers are the rule offsets 
-
     // Entrypoint: Notepadpointer steht auf P3 des Program Counters
     // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
 
-    uint8_t i;  
+    uint8_t i, j;  
 
     // ------------- Mark the IR -------------
-    rule = next$LEFT(rule);
-    rule = next$LEFT(rule);
-    SetRule(rule-1, '$', '_', RIGHT, rule);
+    rule = next$LEFT(rule);                     // Skip MAR
+    rule = next$LEFT(rule);                     // Skip PC
+    SetRule(rule-1, '$', '_', RIGHT, rule);     // Mark IR
 
     // ------- Skip to MAR and Mark MAR -------
     rule = next$RIGHT(rule);                    // Skip IR
@@ -189,157 +187,68 @@ uint16_t INSTtoIR(uint16_t rule){
     SetRule(rule-1, '$', '_', RIGHT, rule);     // Mark MAR
 
     // ------ Mark the memory byte, addressed by register MAR ------
-
     rule = MarkMemoryByte(rule);
 
-    // ---------- Copy Bit7 to Bit4 of the marked memory byte into IR ------------- 
+    // ++++ Copy high nibble of marked memory byte to instruction register IR ++++
+    // Destination register IR is marked
+    // NP position: Bit7 of the marked byte
 
-    // Destination register is marked
-    // Notepadpointer is on position Bit7 of the marked byte
+    // Copy 4 bits
+    for(i=0; i<4; i++) {
 
-    // 49 - Read Bit7 of marked memory Byte and branche
-    SetRule(rule, '0', '0', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+5);
-    rule++;
-    // 50 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT); 
-    // 51 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 52 - Write a 0 into IR3
-    SetRule(rule, '0', '0', RIGHT, rule+4);
-    SetRule(rule, '1', '0', RIGHT, rule+4);
-    rule++;
+        for(j=0; j<i; j++){
+ 
+            // Skip jx right in marked memory byte 
+            rule = nextRIGHT(rule);     
+        }
 
-    // 53 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT);
-    // 54 - Skip to mark of the market register IR 
-    rule = next_LEFT(rule);
-    // 55 - Write a 1 into IR3
-    SetRule(rule, '0', '1', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
+        // Read current bit of marked memory Byte and branche
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+4+i);
+        rule++;
 
-    // 56 - Skip back to Bit7 of the marked byte 
-    rule = next_RIGHT(rule);
+        // Skip left to the memory byte marker
+        rule = next_LEFT(rule, LEFT); 
 
-    // ----- Bit6 -------
+        // Skip to bit3 of the marked register IR 
+        rule = next_LEFT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in IR
+            rule = nextRIGHT(rule);     
+        }
+
+        // Write a 0 into current bit of IR
+        SetRule(rule, '0', '0', RIGHT, rule+4+i);
+        SetRule(rule, '1', '0', RIGHT, rule+4+i);
+        rule++;
+
     
-    // 57 - Skip right to bit6 of the marked memory byte
-    rule = nextRIGHT(rule);
-    // 58 - Read Bit6 of marked memory Byte and branche
-    SetRule(rule, '0', '0', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+5);
-    rule++;
-    // 59 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT);
-    // 60 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 61 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);  
-    // 62 - Write a 0 into IR2
-    SetRule(rule, '0', '0', RIGHT, rule+5);
-    SetRule(rule, '1', '0', RIGHT, rule+5);
-    rule++;
+        // Skip to memory byte marker 
+        rule = next_LEFT(rule, LEFT);
+        // Skip the market destination register IR 
+        rule = next_LEFT(rule);
 
-    // 63 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT);
-    // 64 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 65 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);  
-    // 66 - Write a 1 into IR2
-    SetRule(rule, '0', '1', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in IR
+            rule = nextRIGHT(rule);     
+        }
 
-    // 67 - Skip back to Bit7 of the marked byte 
-    rule = next_RIGHT(rule);
+        // Write a 1 into current bit of IR
+        SetRule(rule, '0', '1', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
 
-    // ----- Bit5 -------
-    
-    // 68 - Skip right to bit6 of the marked memory byte
-    rule = nextRIGHT(rule); 
-    // 69 - Skip right to bit5 of the marked memory byte
-    rule = nextRIGHT(rule); 
-    // 70 - Read Bit5 of marked memory Byte and branche
-    SetRule(rule, '0', '0', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+6);
-    rule++;
-    // 71 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT); 
-    // 72 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 73 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);   
-    // 74 - Skip right bit1 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 75 - Write a 0 into IR2
-    SetRule(rule, '0', '0', RIGHT, rule+6);
-    SetRule(rule, '1', '0', RIGHT, rule+6);
-    rule++;
-
-    // 76 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT); 
-    // 77 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 78 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);    
-    // 79 - Skip right bit1 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 80 - Write a 1 into IR2
-    SetRule(rule, '0', '1', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
-
-    // 81 - Skip back to Bit7 of the marked byte
-    rule = next_RIGHT(rule);
-
-    // ----- Bit4 -------
-    
-    // 82 - Skip right to bit6 of the marked memory byte
-    rule = nextRIGHT(rule); 
-    // 83 - Skip right to bit5 of the marked memory byte
-    rule = nextRIGHT(rule); 
-    // 84 - Skip right to bit4 of the marked memory byte
-    rule = nextRIGHT(rule); 
-    // 85 - Read Bit4 of marked memory Byte and branche
-    SetRule(rule, '0', '0', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+7);
-    rule++;
-    // 86 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT); 
-    // 87 - Skip right bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 88 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);    
-    // 89 - Skip right bit1 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 90 - Skip right bit0 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 91 - Write a 0 into IR2
-    SetRule(rule, '0', '0', RIGHT, rule+7);
-    SetRule(rule, '1', '0', RIGHT, rule+7);
-    rule++;
-
-    // 92 - Skip to memory byte marker 
-    rule = next_LEFT(rule, LEFT);
-    // 93 - Skip to bit3 of the market register IR 
-    rule = next_LEFT(rule);
-    // 94 - Skip right bit2 of the marked register IR
-    rule = nextRIGHT(rule);   
-    // 95 - Skip right bit1 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 96 - Skip right bit0 of the marked register IR
-    rule = nextRIGHT(rule); 
-    // 97 - Write a 1 into IR2
-    SetRule(rule, '0', '1', RIGHT, rule+1);
-    SetRule(rule, '1', '1', RIGHT, rule+1);
-    rule++;
+        // Skip back to Bit7 of the marked byte 
+        rule = next_RIGHT(rule);
+    }
 
     // ---- End of copy Instruction to IR ------
 
-    // 98 - Skip back to the marker of market memory byte and remark
-    rule = next_RIGHT(rule);
+    // Change the last rule for remark
+    // Skip back to the marker of market memory byte and remark
     SetRule(rule-1, '_', '$', RIGHT, rule);
     // 99 - Skip to the marker of the Instruction Register IR and remark it
     rule = next_LEFT(rule);
