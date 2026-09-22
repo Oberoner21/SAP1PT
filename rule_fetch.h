@@ -8,8 +8,7 @@ uint16_t PCtoMAR(uint16_t rule){
     // ++++++++++++++++++++ Copy Notepad to MAR +++++++++++++++++++++++++++
 
     // Notepadpointer auf das $-Zeichen zwischen IR und Programmcounter
-    //rule = next$LEFT(rule);                     // Skip $ 
-    //rule = next$LEFT(rule);                     // Skip $ 
+
     rule = next$LEFT(rule);                     // Skip MAR
     rule = next$LEFT(rule);                     // Skip PC
     SetRule(rule-1, '$', '_', RIGHT, rule);     // Mark the PC with '_'
@@ -177,6 +176,8 @@ uint16_t INSTtoIR(uint16_t rule){
     // Entrypoint: Notepadpointer steht auf P3 des Program Counters
     // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
 
+    uint8_t i;  
+
     // ------------- Mark the IR -------------
     rule = next$LEFT(rule);
     rule = next$LEFT(rule);
@@ -252,108 +253,35 @@ uint16_t INSTtoIR(uint16_t rule){
     SetRule(rule, '1', '1', RIGHT, rule+6);     // MAR3 = 0 & MAR2 = 1 & MAR1 = 0 & MAR0 = 1;
     rule++;
 
-    // 16 - Memory Byte0
-    SetRule(rule, '$', '_', LEFT, rule+31);     // Mark Byte0
-    rule++;
-    // 17 - Memory Byte1
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 18 - Memory Byte2
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 19 - Memory Byte3
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 20 - Memory Byte4
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 21 - Memory Byte5
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 22 - Memory Byte6
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 23 - Memory Byte7
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 24 - Memory Byte8
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 25 - Memory Byte9
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 26 - Memory Byte10
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 27 - Memory Byte11
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 28 - Memory Byte12
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 29 - Memory Byte13
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 30 - Memory Byte14
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
-    rule++;
-    // 31 - Memory Byte15
-    SetRule(rule, '$', '$', RIGHT, rule+15);    // Skip $ right of MAR
+    // 16 - Mark Memory Byte0
+    SetRule(rule, '$', '_', LEFT, rule+31);
     rule++;
 
-    // 32
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '_', LEFT, rule+14);   // Mark Memory Byte
-    // 33
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 34
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 35
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 36
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 37
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 38
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 39
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 40
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 41
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 42
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 43
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 44
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 45
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
-    // 46
-    rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', RIGHT, rule-2);   // Skip Memory Byte
+    // 17 ... 31 - Skip $ right of MAR
+    for(i=0; i<15; i++) {
 
-    // 47
+        SetRule(rule, '$', '$', RIGHT, rule+15);
+        rule++;    
+    }
+
+    // 32 - Mark Memory Byte
+    rule = next$RIGHT(rule);
+    SetRule(rule-1, '$', '_', LEFT, rule+14); 
+
+    // 33...46 - Skip Memory Byte
+    for(i=0; i<14; i++){
+
+        rule = next$RIGHT(rule);
+        SetRule(rule-1, '$', '$', RIGHT, rule-2);   
+    }
+
+    // 47 - Remark MAR
     rule = next_LEFT(rule);
-    SetRule(rule-1, '_', '$', RIGHT, rule);     // Remark MAR
+    SetRule(rule-1, '_', '$', RIGHT, rule);
 
-    // 48
+    // 48 - Skip to Bit7 of the marked byte 
     rule = next_RIGHT(rule);
-    SetRule(rule-1, '_', '_', RIGHT, rule);     // Skip to Bit7 of the marked byte 
+    SetRule(rule-1, '_', '_', RIGHT, rule);
 
     // ---------- Copy Bit7 to Bit4 of the marked memory byte into IR ------------- 
 
@@ -506,7 +434,8 @@ uint16_t INSTtoIR(uint16_t rule){
     SetRule(rule-1, '_', '$', RIGHT, rule);
     // 99 - Skip to the marker of the Instruction Register IR and remark it
     rule = next_LEFT(rule);
-    SetRule(rule-1, '_', '$', RIGHT, rule);
+    //SetRule(rule-1, '_', '$', RIGHT, rule);
+    SetRule(rule-1, '_', '$', RIGHT, RULE_END);
 
     // Exitpoint:  NotepadPointer steht auf I3 des Instruction Registers IR
 
