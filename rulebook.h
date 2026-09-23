@@ -3,7 +3,7 @@
 
 #define     LEFT            -1
 #define     RIGHT           1
-#define     RULES           0x0400
+#define     RULES           0x1000
 #define     SYMBOLS         4
 
 #define     RULE_RESET      0
@@ -11,18 +11,18 @@
 #define     RULE_DECODE     200
 #define     RULE_NOP        250
 #define     RULE_LDA        300
-#define     RULE_ADD        350
-#define     RULE_SUB        400
-#define     RULE_STA        450
-#define     RULE_LDI        500
-#define     RULE_JMP        550
-#define     RULE_JC         600
-#define     RULE_JZ         650
-#define     RULE_OUT        700
-#define     RULE_HLT        750
+#define     RULE_ADD        800
+#define     RULE_SUB        1300
+#define     RULE_STA        1800
+#define     RULE_LDI        2300
+#define     RULE_JMP        2800
+#define     RULE_JC         3000
+#define     RULE_JZ         3050
+#define     RULE_OUT        3100
+#define     RULE_HLT        3200
 
-#define     RULE_END        0x3FE
-#define     RULE_ERROR      0x3FF
+#define     RULE_END        4094
+#define     RULE_ERROR      4095
 
 uint16_t rule_FETCH = 0;
 

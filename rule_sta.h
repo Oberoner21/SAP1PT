@@ -11,5 +11,186 @@ void GenerateRuleSTA(uint16_t rule) {
     // Entrypoint: NP pointer position: I0 of Instruction Register IR
     // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
 
-    SetRule(rule, '0', '0', RIGHT, RULE_END);
+    // Mark A/B
+    // Remark IR
+    // Seek to MAR an mark it
+    // Seek to marked memory byte
+    // Copy low nibble from marked memory byte to MAR
+    // Remark the marked memory byte
+    // Mark the MAR addressed memory byte
+    // Remark MAR
+    // Copy A to marked memory byte
+    // Remark marked memory byte
+    // Remark register A/B
+    // Seek to bit M0 of Memory address register MR
+    // Go back to RULE_FETCH
+
+    uint8_t i, j;
+
+    // Skip left IR (is yet market) and output register
+    rule = next$LEFT(rule);
+
+    // Skip left A/B register and mark it
+    rule = next$LEFT(rule);
+    SetRule(rule-1, '$', '_', RIGHT, rule);
+
+    // Seek to IR marker and remark the register
+    rule = next_RIGHT(rule);
+    SetRule(rule-1, '_', '$', RIGHT, rule);
+
+    // Skip Program counter PC
+    rule = next$RIGHT(rule);
+
+    // Seek to MAR and mark it
+    rule = next$RIGHT(rule);
+    SetRule(rule-1, '$', '_', RIGHT, rule); 
+
+    // Seek to bit7 of the marked memory byte
+    rule = next_RIGHT(rule);
+
+    // Copy low nibble marked memory byte int0 MAR
+    for(i=0; i<4; i++) {
+
+        // Skip 4 byte right to bit3 of the marked memory register
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx right in marked memory byte 
+            rule = nextRIGHT(rule);     
+        }
+
+        // Read current bit of marked memory Byte and branche
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+4+i);
+        rule++;
+
+        // Skip left to the memory byte marker
+        rule = next_LEFT(rule, LEFT); 
+
+        // Skip to bit3 of the marked register MAR 
+        rule = next_LEFT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in MAR
+            rule = nextRIGHT(rule);     
+        }
+
+        // Write a 0 into current bit of MAR
+        SetRule(rule, '0', '0', RIGHT, rule+4+i);
+        SetRule(rule, '1', '0', RIGHT, rule+4+i);
+        rule++;
+
+    
+        // Skip to memory byte marker 
+        rule = next_LEFT(rule, LEFT);
+        // Skip the market destination register MAR 
+        rule = next_LEFT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in MAR
+            rule = nextRIGHT(rule);     
+        }
+
+        // Write a 1 into current bit of MAR
+        SetRule(rule, '0', '1', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
+
+        // Skip back to Bit7 of the marked byte 
+        rule = next_RIGHT(rule);
+    }
+    // Change last rule
+    // Remark the marked memory byte
+    SetRule(rule-1, '_', '$', LEFT, rule);
+
+    // Seek back to bit3 of MAR
+    rule = next_LEFT(rule);
+
+    // ------ Mark the memory byte, addressed by register MAR ------
+    rule = MarkMemoryByte(rule);
+    // Change the direction of last rule to LEFT
+    SetRule(rule-1, '_', '_', LEFT, rule);
+
+    // Seek to A7 of marked register A/B
+    rule = next_LEFT(rule); 
+
+    // Copy interleaved A register into marked memory byte
+    for(i=0; i<8; i++){
+
+        for(j=0; j<i; j++){
+
+            // Skip register bit and constant bit
+            rule = nextRIGHT(rule);
+            rule = nextRIGHT(rule);         
+        }
+
+        // Read current bit in A and branch
+        SetRule(rule, '0', '0', RIGHT, rule+3+i);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
+
+        // Readed bit was a 1
+        // Seek to bit7 of the marked memory byte
+        rule = next_RIGHT(rule); 
+
+        for(j=0; j<i; j++){
+
+            // Skip jx bit in marked memory byte
+            rule = nextRIGHT(rule);  
+        }
+
+        // Write a 1 into current bit of marked memory byte
+        SetRule(rule, '0', '1', RIGHT, rule+3+i);
+        SetRule(rule, '1', '1', RIGHT, rule+3+i);  
+        rule++;
+
+        // Readed bit was a 0
+        // Seek to bit7 of the marked memory byte
+        rule = next_RIGHT(rule); 
+
+        for(j=0; j<i; j++){
+
+            // Skip jx bit in marked memory byte
+            rule = nextRIGHT(rule);  
+        }
+
+        // Write a 0 into current bit of marked memory byte
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '0', RIGHT, rule+1);  
+        rule++;
+
+        // Skip left marked memory byte
+        rule = next_LEFT(rule);
+        SetRule(rule-1, '_', '_', LEFT, rule);
+
+        // Jump back to A7 of register A/B
+        rule = next_LEFT(rule);
+    }
+
+    // Seek back to marked memory byte an remark it
+    rule = next_RIGHT(rule);
+    SetRule(rule-1, '_', '$', LEFT, rule);
+    // Seek to marked register A/B
+    rule = next_LEFT(rule);
+    SetRule(rule-1, '_', '$', RIGHT, rule);
+
+    // Skip right register A/B
+    rule = next$RIGHT(rule);
+    // Skip right Output register
+    rule = next$RIGHT(rule); 
+    // Skip right Instruction Register IR
+    rule = next$RIGHT(rule);     
+    // Skip right Program counter PC
+    rule = next$RIGHT(rule); 
+    // Skip right Memory Address Register MAR and go to RULE_FETCH
+    rule = next$RIGHT(rule);
+    SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
+
+    // 297 rules
 }
