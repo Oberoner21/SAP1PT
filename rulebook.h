@@ -110,6 +110,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_decode.h"
 #include "rule_ldi.h"
 #include "rule_sta.h"
+#include "rule_add.h"
 
 
 void generateRuleBook()
@@ -131,28 +132,6 @@ void generateRuleBook()
     GenerateRuleDECODE(RULE_DECODE);
     GenerateRuleLDI(RULE_LDI);
     GenerateRuleSTA(RULE_STA);
+    GenerateRuleADD(RULE_ADD);
 
-    //----------------- A + B ----------------------
-
-//     rule = 204;
-
-//     SetRule(rule, '0', '0', LEFT, 205);              // Rule 204 -> SUM = 0
-//     SetRule(rule, '1', '1', LEFT, 205);
-//     rule++;
-
-//     SetRule(rule, '0', '_', LEFT, 204);              // Rule 205 -> No Carry
-//     SetRule(rule, '1', '_', LEFT, 206);
-//     SetRule(rule, '$', '$', RIGHT, 209);             // End of Progress
-//     rule++;
-
-//     SetRule(rule, '0', '1', LEFT, 205);              // Rule 206 -> SUM = 1
-//     SetRule(rule, '1', '0', LEFT, 207);
-//     rule++;
-
-//     SetRule(rule, '0', '_', LEFT, 206);              // Rule 207 -> Carry
-//     SetRule(rule, '1', '_', LEFT, 208);
-//     rule++;
-
-//     SetRule(rule, '0', '0', LEFT, 207);              // Rule 208 -> SUM = 2
-//     rule++;
 }

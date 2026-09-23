@@ -1,0 +1,280 @@
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  rule_ldi.h
+
+    Copyright(C) 2026 by Oberoner
+*/
+
+
+void GenerateRuleADD(uint16_t rule) {
+
+    // Entrypoint: NP pointer position: I0 of Instruction Register IR
+    // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
+
+    // Mark A/B
+    // Remark IR
+    // Seek to MAR an mark it
+    // Seek to marked memory byte
+    // Copy low nibble from marked memory byte to MAR
+    // Remark the marked memory byte
+    // Mark the MAR addressed memory byte
+    // Remark MAR
+    // Seek to marked memory byte bit 7
+    // Copy the marked memory byte into register B
+    // Remark the marked memory byte
+
+    uint8_t i, j;
+
+    // Skip left IR (is yet market) and output register
+    rule = next$LEFT(rule);
+
+    // Skip left A/B register and mark it
+    rule = next$LEFT(rule);
+    SetRule(rule-1, '$', '_', RIGHT, rule);
+
+    // Seek to IR marker and remark the register
+    rule = next_RIGHT(rule);
+    SetRule(rule-1, '_', '$', RIGHT, rule);
+
+    // Skip Program counter PC
+    rule = next$RIGHT(rule);
+
+    // Seek to MAR and mark it
+    rule = next$RIGHT(rule);
+    SetRule(rule-1, '$', '_', RIGHT, rule); 
+
+    // Seek to bit7 of the marked memory byte
+    rule = next_RIGHT(rule);
+
+    // Copy low nibble marked memory byte int0 MAR
+    for(i=0; i<4; i++) {
+
+        // Skip 4 byte right to bit3 of the marked memory register
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+        rule = nextRIGHT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx right in marked memory byte 
+            rule = nextRIGHT(rule);     
+        }
+
+        // Read current bit of marked memory Byte and branche
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+4+i);
+        rule++;
+
+        // Skip left to the memory byte marker
+        rule = next_LEFT(rule, LEFT); 
+
+        // Skip to bit3 of the marked register MAR 
+        rule = next_LEFT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in MAR
+            rule = nextRIGHT(rule);     
+        }
+
+        // Write a 0 into current bit of MAR
+        SetRule(rule, '0', '0', RIGHT, rule+4+i);
+        SetRule(rule, '1', '0', RIGHT, rule+4+i);
+        rule++;
+
+    
+        // Skip to memory byte marker 
+        rule = next_LEFT(rule, LEFT);
+        // Skip the market destination register MAR 
+        rule = next_LEFT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in MAR
+            rule = nextRIGHT(rule);     
+        }
+
+        // Write a 1 into current bit of MAR
+        SetRule(rule, '0', '1', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
+
+        // Skip back to Bit7 of the marked byte 
+        rule = next_RIGHT(rule);
+    }
+    // Change last rule
+    // Remark the marked memory byte
+    SetRule(rule-1, '_', '$', LEFT, rule);
+
+    // Seek back to bit3 of MAR
+    rule = next_LEFT(rule);
+
+    // ------ Mark the memory byte, addressed by register MAR ------
+    rule = MarkMemoryByte(rule);
+    // Change the direction of last rule to RIGHT to seek to bit7 of MMR
+    SetRule(rule-1, '_', '_', RIGHT, rule);
+
+    // Copy MMR to B
+    for(i=0; i<8; i++) {
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx right in marked memory byte 
+            rule = nextRIGHT(rule);     
+        }
+
+        // Read current bit of MMB and branche
+        SetRule(rule, '0', '0', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+5+i*2);
+        rule++;
+
+        // Seek left to the memory byte marker
+        rule = next_LEFT(rule, LEFT); 
+
+        // Seek to A7 of the marked register A/B 
+        rule = next_LEFT(rule);
+        // Skip right to B7
+        rule = nextRIGHT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in A/B
+            rule = nextRIGHT(rule); 
+            rule = nextRIGHT(rule); 
+        }
+
+        // Write a 0 into current bit of B
+        SetRule(rule, '0', '0', RIGHT, rule+5+i*2);
+        SetRule(rule, '1', '0', RIGHT, rule+5+i*2);
+        rule++;
+
+    
+        // Seek to memory byte marker 
+        rule = next_LEFT(rule, LEFT);
+        // Seek to the market destination register A/B
+        rule = next_LEFT(rule);
+        // Skip right to B7
+        rule = nextRIGHT(rule);
+
+        for(j=0; j<i; j++){
+ 
+            // Skip jx bit right in A/B
+            rule = nextRIGHT(rule);    
+            rule = nextRIGHT(rule);   
+        }
+
+        // Write a 1 into current bit of B
+        SetRule(rule, '0', '1', RIGHT, rule+1);
+        SetRule(rule, '1', '1', RIGHT, rule+1);
+        rule++;
+        
+        // Seek back to Bit7 of the marked byte 
+        rule = next_RIGHT(rule);
+    }
+
+    // Change last rule
+    // Remark the marked memory byte
+    SetRule(rule-1, '_', '$', LEFT, rule);
+
+    // Seek back to marked register A/B and remark it
+    rule = next_LEFT(rule);
+    SetRule(rule-1, '-', '$', RIGHT, rule);
+
+    // Seek to B0
+    rule = next$RIGHT(rule);
+    // Change the rule to new value of next rule -> Rule 1 of A+B
+    SetRule(rule-1, '$', '$', LEFT, rule+1);
+
+    // Add A + B and set the C and Z flag
+    //----------------- A + B ----------------------
+
+    // 0
+    SetRule(rule, '0', '0', LEFT, rule+1);      // SUM = 0
+    SetRule(rule, '1', '1', LEFT, rule+1);
+    rule++;
+    // 1
+    SetRule(rule, '0', '_', LEFT, rule-1);      // No Carry
+    SetRule(rule, '1', '_', LEFT, rule+1);
+    SetRule(rule, '$', '$', LEFT, rule+4);     // End of Add with no carry
+    rule++;
+    // 2
+    SetRule(rule, '0', '1', LEFT, rule-1);      // SUM = 1
+    SetRule(rule, '1', '0', LEFT, rule+1);
+    rule++;
+    // 3
+    SetRule(rule, '0', '_', LEFT, rule-1);      // Carry
+    SetRule(rule, '1', '_', LEFT, rule+1);
+    SetRule(rule, '$', '$', LEFT, rule+3);      // End of Add with carry
+    rule++;
+    // 4
+    SetRule(rule, '0', '0', LEFT, rule-1);      // SUM = 2
+    rule++;
+
+    // 5 - Reset carry
+    SetRule(rule, '0', '0', RIGHT, rule+2);
+    SetRule(rule, '1', '0', RIGHT, rule+2);
+    rule++;
+
+    // 6 - Set carry
+    SetRule(rule, '0', '1', RIGHT, rule+1);
+    SetRule(rule, '1', '1', RIGHT, rule+1);
+    rule++;
+
+    // 7 - Skip right
+    rule = nextRIGHT(rule);
+
+    // ----- Check zero flag ------
+    // 8 Look to a one in register A/B
+    SetRule(rule, '_', '_', RIGHT, rule);       // Skip underscore and repeate
+    SetRule(rule, '0', '0', RIGHT, rule);       // Skip 0 and repeat
+    SetRule(rule, '1', '1', LEFT, rule+1);      // Found a 1 -> No zero
+    SetRule(rule, '$', '$', LEFT, rule+4);      // A = 0 -> Set zero flag
+    rule++;
+
+    // Reset zero flag
+    // 9 - Seek left to carry
+    rule = next$LEFT(rule, LEFT);
+    // 10 - Skip left to zero flag
+    rule = nextLEFT(rule);
+    // 11 - Write 0 to zero flag
+    SetRule(rule, '0', '0', RIGHT, rule+1);
+    SetRule(rule, '1', '0', RIGHT, rule+4);
+    rule++;
+
+    // Set zero flag
+    // 12 - Seek left to carry
+    rule = next$LEFT(rule, LEFT);
+    // 13 - Skip left to zero flag
+    rule = nextLEFT(rule);
+    // 14 - Write 1 to zero flag
+    SetRule(rule, '0', '1', RIGHT, rule+1);
+    SetRule(rule, '1', '1', RIGHT, rule+1);
+    rule++; 
+    
+    // Fill register B with 0
+    // 15 - Skip to right over carry
+    rule = nextRIGHT(rule);
+    // 16 - Skip to right over $
+    rule = nextRIGHT(rule);
+
+    // 17 - Fill the B register
+    SetRule(rule, '_', '0', RIGHT, rule);
+    SetRule(rule, '0', '0', RIGHT, rule);
+    SetRule(rule, '1', '1', RIGHT, rule);
+    SetRule(rule, '$', '$', RIGHT, rule+1);   
+    rule++;
+
+    // Skip right Output register
+    rule = next$RIGHT(rule); 
+    // Skip right Instruction Register IR
+    rule = next$RIGHT(rule);     
+    // Skip right Program counter PC
+    rule = next$RIGHT(rule); 
+    // Skip right Memory Address Register MAR and go to RULE_FETCH
+    rule = next$RIGHT(rule);
+    SetRule(rule-1, '$', '$', LEFT, RULE_END);  
+
+    // 365 Rules
+
+}
