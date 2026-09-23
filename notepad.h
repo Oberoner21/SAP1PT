@@ -1,14 +1,12 @@
 #define     NOTEPADSIZE     0x0100
 
-const char ccSymbols[] = ("_01$");
-
 // Fibonacci 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233
 //           0x01, 0x02, 0x03, 0x05, 0x08, 0x0D, 0x15, 0x22, 0x37, 0x59, 0x90, 0xE9
 unsigned char Fibonacci[16] = {
 	0x51,			//	LDI 0x1
 	0x4E,			//	STA [0xE]
-	0x50,			//	LDI 0x0
-	0x2E,			//	ADD [0xE]
+	0x51,			//	LDI 0x0
+	0x2F,			//	ADD [0xE]
 	0x70,			//	JC 0x0
 	0xE0,			//	OUT
 	0x4F,			//	STA [0xF]
@@ -20,7 +18,7 @@ unsigned char Fibonacci[16] = {
 	0x63,			//	JMP 0x3
 	0x00,
 	0x00,
-	0x00
+	0xFF
 };
 
 const char npItems[] = (
@@ -72,7 +70,4 @@ void copyNPItems()
 
     SetPC();
     CopyProgram();
-
-                for(int j=0; j<npSize; j++) std::cout << ccSymbols[notePad[j]];
-            std::cout << "\n";
 }

@@ -273,7 +273,7 @@ void GenerateRuleADD(uint16_t rule) {
     rule = next$RIGHT(rule); 
     // Skip right Memory Address Register MAR and go to RULE_FETCH
     rule = next$RIGHT(rule);
-    SetRule(rule-1, '$', '$', LEFT, RULE_END);  
+    SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
     // 365 Rules
 

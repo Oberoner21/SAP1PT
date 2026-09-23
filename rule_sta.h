@@ -173,7 +173,7 @@ void GenerateRuleSTA(uint16_t rule) {
         rule = next_LEFT(rule);
     }
 
-    // Seek back to marked memory byte an remark it
+    // Seek back to MMB an remark it
     rule = next_RIGHT(rule);
     SetRule(rule-1, '_', '$', LEFT, rule);
     // Seek to marked register A/B

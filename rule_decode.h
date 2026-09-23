@@ -93,7 +93,7 @@ uint16_t GenerateRuleDECODE(uint16_t rule){
     SetRule(rule, '$', '$', LEFT, RULE_JMP); // 0x6 JMP
     rule++;
 
-    SetRule(rule, '$', '$', LEFT, RULE_END); // 0x7 JC
+    SetRule(rule, '$', '$', LEFT, RULE_JC); // 0x7 JC
     rule++;
 
     SetRule(rule, '$', '$', LEFT, RULE_JZ); // 0x8 JZ
