@@ -1,28 +1,50 @@
 {
+    "version": "2.0.0",
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: g++-9 Aktive Datei kompilieren",
+            "label": "C/C++: g++-9 main.cpp kompilieren",
             "command": "/usr/bin/g++-9",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "${workspaceFolder}/main.cpp",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${workspaceFolder}/main"
             ],
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
             ],
             "group": {
+                "kind": "build"
+            },
+            "detail": "Kompiliert immer main.cpp."
+        },
+        {
+            "label": "C++: main ausführen",
+            "type": "shell",
+            "command": "${workspaceFolder}/main",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "C++: main.cpp kompilieren und ausführen",
+            "dependsOn": [
+                "C/C++: g++-9 main.cpp kompilieren",
+                "C++: main ausführen"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": [],
+            "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "Vom Debugger generierte Aufgabe."
+            "detail": "Kompiliert main.cpp und führt das Programm anschließend aus."
         }
-    ],
-    "version": "2.0.0"
+    ]
 }
