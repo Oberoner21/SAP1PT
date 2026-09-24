@@ -112,6 +112,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_sta.h"
 #include "rule_add.h"
 #include "rule_jc.h"
+#include "rule_out.h"
 
 
 void generateRuleBook()
@@ -121,9 +122,9 @@ void generateRuleBook()
     // Initialize all rules as Error State
     while(rule < RULES){
 
+        SetRule(rule, '_', '_', RIGHT, RULE_ERROR);
         SetRule(rule, '0', '0', RIGHT, RULE_ERROR);  
         SetRule(rule, '1', '1', RIGHT, RULE_ERROR);
-        SetRule(rule, '_', '_', RIGHT, RULE_ERROR);
         SetRule(rule, '$', '$', RIGHT, RULE_ERROR);
         rule++;
     }
@@ -135,4 +136,5 @@ void generateRuleBook()
     GenerateRuleSTA(RULE_STA);
     GenerateRuleADD(RULE_ADD);
     GenerateRuleJC(RULE_JC);
+    GenerateRuleOUT(RULE_OUT);
 }

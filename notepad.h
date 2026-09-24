@@ -5,7 +5,7 @@
 unsigned char Fibonacci[16] = {
 	0x51,			//	LDI 0x1
 	0x4E,			//	STA [0xE]
-	0x51,			//	LDI 0x0
+	0x50,			//	LDI 0x0
 	0x2E,			//	ADD [0xE]
 	0x70,			//	JC 0x0
 	0xE0,			//	OUT
@@ -28,9 +28,10 @@ const uint16_t npSize = 196;
 
 int notePad[NOTEPADSIZE];
 
-const uint8_t MEMSTART = 49; // Start position of memory in the notepad
+const uint8_t MEMSTART = 49;    // Start position of memory in the notepad
+
 const uint8_t PC = 0;
-uint8_t nppPC = 42;      // Notepad position of $ right C1
+uint8_t nppPC = 42;             // Notepad position of $ right C1
 
 void SetPC(){
 
