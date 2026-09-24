@@ -15,6 +15,17 @@ void GenerateRuleOUT(uint16_t rule) {
 
     uint8_t i, j;
 
+    // Wichtig für die Ausgabe !!!
+
+    // Nur einmal nach rechts skippen! Nachfolgend wird sonst immer
+    // wieder zurück auf die RULE_OUT itteriert.
+
+    SetRule(rule, '_', '_', RIGHT, rule+1);
+    SetRule(rule, '0', '0', RIGHT, rule+1);
+    SetRule(rule, '1', '1', RIGHT, rule+1);
+    SetRule(rule, '$', '$', RIGHT, rule+1);
+    rule++;
+
     // Seek back to MMB an remark it
     rule = next_RIGHT(rule); 
     SetRule(rule-1, '_', '$', LEFT, rule);
@@ -29,5 +40,5 @@ void GenerateRuleOUT(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH); 
 
-    // 5 Rules
+    // 6 Rules
 }

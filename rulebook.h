@@ -24,7 +24,6 @@
 #define     RULE_END        4094
 #define     RULE_ERROR      4095
 
-uint16_t rule_FETCH = 0;
 
 struct rule {
     int next;
@@ -32,7 +31,6 @@ struct rule {
     int writeSymbol;
 } ruleBook[RULES][SYMBOLS];
 
-int rule = 0;
 
 void SetRule(int rule, unsigned char readSymbol, unsigned char writeSymbol, int direction, int nextRule){
 
@@ -113,6 +111,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_add.h"
 #include "rule_jc.h"
 #include "rule_out.h"
+#include "rule_lda.h"
 
 
 void generateRuleBook()
@@ -137,4 +136,5 @@ void generateRuleBook()
     GenerateRuleADD(RULE_ADD);
     GenerateRuleJC(RULE_JC);
     GenerateRuleOUT(RULE_OUT);
+    GenerateRuleLDA(RULE_LDA);
 }

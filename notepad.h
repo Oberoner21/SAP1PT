@@ -29,16 +29,27 @@ const uint16_t npSize = 196;
 int notePad[NOTEPADSIZE];
 
 const uint8_t MEMSTART = 49;    // Start position of memory in the notepad
+const uint8_t A_START = 5;      // Start position of Register A/B in the notepad
 
-const uint8_t PC = 0;
-uint8_t nppPC = 42;             // Notepad position of $ right C1
 
-void SetPC(){
+char outBuffer[10];
 
-    notePad[nppPC] = PC & 0x01 ? 2 : 1;
-    notePad[nppPC-2] = PC & 0x02 ? 2 : 1;
-    notePad[nppPC-4] = PC & 0x04 ? 2 : 1;
-    notePad[nppPC-6] = PC & 0x08 ? 2 : 1;
+void makeOutStr() {
+
+    // Erstellt aus dem Wert des Registers A einen Ausgabestring in outBuffer
+
+    uint8_t outValue = 0;
+
+    outValue = outValue | notePad[A_START] == 2 ? 0x80 : 0x00;
+    outValue = outValue | notePad[A_START+2] == 2 ? 0x40 : 0x00;
+    outValue = outValue | notePad[A_START+4] == 2 ? 0x20 : 0x00;
+    outValue = outValue | notePad[A_START+6] == 2 ? 0x10 : 0x00;
+    outValue = outValue | notePad[A_START+8] == 2 ? 0x08 : 0x00;
+    outValue = outValue | notePad[A_START+10] == 2 ? 0x04 : 0x00;
+    outValue = outValue | notePad[A_START+12] == 2 ? 0x02 : 0x00;
+    outValue = outValue | notePad[A_START+14] == 2 ? 0x01 : 0x00;
+
+    sprintf(outBuffer, "%d", outValue);
 }
 
 void CopyProgram(){
@@ -69,6 +80,5 @@ void copyNPItems()
         notePad[i] = symbol2num(npItems[i]);
     }
 
-    SetPC();
     CopyProgram();
 }

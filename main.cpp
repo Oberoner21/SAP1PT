@@ -5,6 +5,8 @@
 const char cSymbols[] = ("_01$");
 
 int notePadPointer = 0;
+int rule = 0;
+
 bool halt = false;
 
 int main() {
@@ -12,7 +14,7 @@ int main() {
     generateRuleBook();
     copyNPItems();
 
-    int cykles = 0;
+    int cykles = 0, outCount = 0;
     notePadPointer = 0;
     rule = 0;
 
@@ -24,6 +26,15 @@ int main() {
         rule = nextRule;
 
         cykles++;
+
+        if(rule == RULE_OUT) {
+
+            // Display the current value of A register
+            makeOutStr();
+            std::cout << outBuffer; 
+            std::cout << "\n";
+        }
+
 
         if(rule == RULE_END) {
             std::cout << "END state in cykle: " << cykles << std::endl;
