@@ -1,6 +1,10 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "rulebook.h"
 #include "notepad.h"
+
+using namespace std;
 
 const char cSymbols[] = ("_01$");
 
@@ -14,7 +18,8 @@ int main() {
     generateRuleBook();
     copyNPItems();
 
-    int cykles = 0, outCount = 0;
+    int cykles = 0;
+    int currentRule;
     notePadPointer = 0;
     rule = 0;
 
@@ -23,6 +28,7 @@ int main() {
         int nextRule = ruleBook[rule][symbol].next;
         notePad[notePadPointer] = ruleBook[rule][symbol].writeSymbol;
         notePadPointer += ruleBook[rule][symbol].direction;
+        currentRule = rule;
         rule = nextRule;
 
         cykles++;
@@ -31,10 +37,11 @@ int main() {
 
             // Display the current value of A register
             makeOutStr();
-            std::cout << outBuffer; 
-            std::cout << "\n";
-        }
+            std::cout << "Out: " << outBuffer << std::endl;
 
+            // Delay 
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+        }
 
         if(rule == RULE_END) {
             std::cout << "END state in cykle: " << cykles << std::endl;
@@ -53,6 +60,7 @@ int main() {
             std::cout << "Go to error state in cykle: " << cykles << std::endl; 
             std::cout << "Notepad Pointer: " << notePadPointer << std::endl;
             std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer]] << std::endl; 
+            std::cout << "Rule: " << currentRule << std::endl; 
 
             for(int j=0; j<npSize; j++) std::cout << cSymbols[notePad[j]];
             std::cout << "\n";
@@ -61,6 +69,7 @@ int main() {
 
             halt = true;
         }
+
     }
 
     return 0;

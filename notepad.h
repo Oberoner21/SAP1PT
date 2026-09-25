@@ -21,6 +21,25 @@ unsigned char Fibonacci[16] = {
 	0x00
 };
 
+// unsigned char Fibonacci[16] = {
+// 	0x1E,			//	LDI 0x1
+// 	0x2F,			//	STA [0xE]  2F
+// 	0xE0,			//	LDI 0x0
+// 	0xF0,			//	ADD [0xE]
+// 	0x00,			//	JC 0x0
+// 	0x00,			//	OUT
+// 	0x00,			//	STA [0xF]
+// 	0x00,			//	LDA [0xE]
+// 	0x00,			//	STA [0xD]
+// 	0x00,			//	LDA [0xF]
+// 	0x00,			//	STA [0xE]
+// 	0x00,			//	LDA [0xD]
+// 	0x00,			//	JMP 0x3
+// 	0x00,
+// 	0x01,
+// 	0x01
+// };
+
 const char npItems[] = (
     "$$10$0000000000000000$00000000$0000$00000001$0000$01010001$01001110$01010000$00101110$01110001$01001110$01010000$00101110$01010001$01001110$01010000$00101110$01010001$01001110$01010000$01010000$$$"
 );
@@ -31,7 +50,6 @@ int notePad[NOTEPADSIZE];
 const uint8_t MEMSTART = 49;    // Start position of memory in the notepad
 const uint8_t A_START = 5;      // Start position of Register A/B in the notepad
 
-
 char outBuffer[10];
 
 void makeOutStr() {
@@ -40,14 +58,11 @@ void makeOutStr() {
 
     uint8_t outValue = 0;
 
-    outValue = outValue | notePad[A_START] == 2 ? 0x80 : 0x00;
-    outValue = outValue | notePad[A_START+2] == 2 ? 0x40 : 0x00;
-    outValue = outValue | notePad[A_START+4] == 2 ? 0x20 : 0x00;
-    outValue = outValue | notePad[A_START+6] == 2 ? 0x10 : 0x00;
-    outValue = outValue | notePad[A_START+8] == 2 ? 0x08 : 0x00;
-    outValue = outValue | notePad[A_START+10] == 2 ? 0x04 : 0x00;
-    outValue = outValue | notePad[A_START+12] == 2 ? 0x02 : 0x00;
-    outValue = outValue | notePad[A_START+14] == 2 ? 0x01 : 0x00;
+    for(uint8_t i=A_START; i<A_START+16; i+=2) {
+
+        uint8_t bit = notePad[i] - 1;
+        outValue = (outValue << 1) + bit;
+    }
 
     sprintf(outBuffer, "%d", outValue);
 }

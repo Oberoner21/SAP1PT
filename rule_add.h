@@ -25,6 +25,12 @@ void GenerateRuleADD(uint16_t rule) {
 
     uint8_t i, j;
 
+    SetRule(rule, '_', '_', LEFT, rule+1);
+    SetRule(rule, '0', '0', LEFT, rule+1);
+    SetRule(rule, '1', '1', LEFT, rule+1);
+    SetRule(rule, '$', '$', LEFT, rule+1);
+    rule++;
+
     // Skip left IR (is yet market) and output register
     rule = next$LEFT(rule);
 
@@ -46,7 +52,7 @@ void GenerateRuleADD(uint16_t rule) {
     // Seek to bit7 of the marked memory byte
     rule = next_RIGHT(rule);
 
-    // Copy low nibble marked memory byte int0 MAR
+    // Copy low nibble marked memory byte into MAR
     for(i=0; i<4; i++) {
 
         // Skip 4 byte right to bit3 of the marked memory register
@@ -112,10 +118,10 @@ void GenerateRuleADD(uint16_t rule) {
 
     // ------ Mark the memory byte, addressed by register MAR ------
     rule = MarkMemoryByte(rule);
-    // Change the direction of last rule to RIGHT to seek to bit7 of MMR
+    // Change the direction of last rule to RIGHT to seek to bit7 of MMB
     SetRule(rule-1, '_', '_', RIGHT, rule);
 
-    // Copy MMR to B
+    // --------------- Copy MMR to B ----------------------
     for(i=0; i<8; i++) {
 
         for(j=0; j<i; j++){
@@ -183,7 +189,7 @@ void GenerateRuleADD(uint16_t rule) {
 
     // Seek to B0
     rule = next$RIGHT(rule);
-    // Change the rule to new value of next rule -> Rule 1 of A+B
+    // Change the rule to new value of next rule -> Rule 1 NoCarry
     SetRule(rule-1, '$', '$', LEFT, rule+1);
 
     // Add A + B and set the C and Z flag
@@ -209,6 +215,7 @@ void GenerateRuleADD(uint16_t rule) {
     rule++;
     // 4
     SetRule(rule, '0', '0', LEFT, rule-1);      // SUM = 2
+    SetRule(rule, '1', '1', LEFT, rule-1);
     rule++;
 
     // 5 - Reset carry
@@ -225,7 +232,7 @@ void GenerateRuleADD(uint16_t rule) {
     rule = nextRIGHT(rule);
 
     // ----- Check zero flag ------
-    // 8 Look to a one in register A/B
+    // 8 - Look to a one in register A/B
     SetRule(rule, '_', '_', RIGHT, rule);       // Skip underscore and repeate
     SetRule(rule, '0', '0', RIGHT, rule);       // Skip 0 and repeat
     SetRule(rule, '1', '1', LEFT, rule+1);      // Found a 1 -> No zero
@@ -238,7 +245,7 @@ void GenerateRuleADD(uint16_t rule) {
     // 10 - Skip left to zero flag
     rule = nextLEFT(rule);
     // 11 - Write 0 to zero flag
-    SetRule(rule, '0', '0', RIGHT, rule+1);
+    SetRule(rule, '0', '0', RIGHT, rule+4);
     SetRule(rule, '1', '0', RIGHT, rule+4);
     rule++;
 
@@ -248,7 +255,7 @@ void GenerateRuleADD(uint16_t rule) {
     // 13 - Skip left to zero flag
     rule = nextLEFT(rule);
     // 14 - Write 1 to zero flag
-    SetRule(rule, '0', '1', RIGHT, rule+1);
+    SetRule(rule, '0', '1', RIGHT, rule+1); // ++++++ Rule 1158
     SetRule(rule, '1', '1', RIGHT, rule+1);
     rule++; 
     

@@ -18,6 +18,12 @@ void GenerateRuleLDA(uint16_t rule) {
 
     uint8_t i, j;
 
+    SetRule(rule, '_', '_', LEFT, rule+1);
+    SetRule(rule, '0', '0', LEFT, rule+1);
+    SetRule(rule, '1', '1', LEFT, rule+1);
+    SetRule(rule, '$', '$', LEFT, rule+1);
+    rule++;
+
     // Skip left IR (is yet market) and output register
     rule = next$LEFT(rule);
 
@@ -108,8 +114,8 @@ void GenerateRuleLDA(uint16_t rule) {
 
     // ------ Mark the memory byte, addressed by register MAR ------
     rule = MarkMemoryByte(rule);
-    // Change the direction of last rule to LEFT
-    SetRule(rule-1, '_', '_', LEFT, rule);
+    // Change the direction of last rule to RIGHT
+    SetRule(rule-1, '_', '_', RIGHT, rule);
 
     // --------- Copy MMB value into interleaved register A/B ---------------
 

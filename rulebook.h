@@ -112,6 +112,8 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_jc.h"
 #include "rule_out.h"
 #include "rule_lda.h"
+#include "rule_jmp.h"
+#include "rule_hlt.h"
 
 
 void generateRuleBook()
@@ -137,4 +139,6 @@ void generateRuleBook()
     GenerateRuleJC(RULE_JC);
     GenerateRuleOUT(RULE_OUT);
     GenerateRuleLDA(RULE_LDA);
+    GenerateRuleJMP(RULE_JMP);
+    GenerateRuleHLT(RULE_HLT);
 }

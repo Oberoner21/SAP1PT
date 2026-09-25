@@ -6,50 +6,27 @@
 */
 
 
-void GenerateRuleJC(uint16_t rule) {
+void GenerateRuleJMP(uint16_t rule) {
 
     // Entrypoint: NP pointer position: I0 of Instruction Register IR
     // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
 
-    // Seek to carry flag
-    // If not carry -> END 
-    // If carry
-    //  - Seek to PC and mark it
-    //  - Copy low nibble MMB into interleaved PC
-    //  - Remark PC and END
-    //  END
-    //  - Remark MMB,
-    //  - Remark IR
-    //  - Seek to MAR0
-    //  - Go to RULE_FETCH
+    //  Seek to PC and mark it
+    //  Copy low nibble MMB into interleaved PC
+    //  Remark PC and END
+    //  Remark MMB,
+    //  Remark IR
+    //  Seek to MAR0
+    //  Go to RULE_FETCH
 
     uint8_t i, j;
 
-    SetRule(rule, '_', '_', LEFT, rule+1);
-    SetRule(rule, '0', '0', LEFT, rule+1);
-    SetRule(rule, '1', '1', LEFT, rule+1);
-    SetRule(rule, '$', '$', LEFT, rule+1);
+    SetRule(rule, '_', '_', RIGHT, rule+1);
+    SetRule(rule, '0', '0', RIGHT, rule+1);
+    SetRule(rule, '1', '1', RIGHT, rule+1);
+    SetRule(rule, '$', '$', RIGHT, rule+1);
     rule++;
-
-    // Skip left IR (is yet market) and output register
-    rule = next$LEFT(rule);
-
-    // Skip left A/B register
-    rule = next$LEFT(rule);
-
-    // Read carry
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Carry not set
-    SetRule(rule, '1', '1', RIGHT, rule+2);     // Carry set
-    rule++;
-
-    // Skip marked IR
-    rule = next_RIGHT(rule);
-    SetRule(rule-1, '_', '_', RIGHT, rule+82);     // <-- Jump to END !!!!
-
-    // ++++++++ Carry is set +++++++++++++
-
-    // Seek to IR (the Marker is yet set)
-    rule = next_RIGHT(rule);
+    
     // Seek to PC and mark it
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '_', RIGHT, rule);
@@ -136,5 +113,5 @@ void GenerateRuleJC(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
-    // 92 Rules
+    // Rules 86
 }
