@@ -102,6 +102,8 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 }
 
 #include "rule_markMemByte.h"
+#include "rule_cpyMMBArgToPC.h"
+#include "rule_cpyMMBArgToMAR.h"
 
 #include "rule_reset.h"
 #include "rule_fetch.h"

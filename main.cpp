@@ -38,9 +38,8 @@ int main() {
             // Display the current value of A register
             makeOutStr();
             std::cout << "Out: " << outBuffer << std::endl;
-
-            // Delay 
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            // Delay
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
         if(rule == RULE_END) {
@@ -70,6 +69,8 @@ int main() {
             halt = true;
         }
 
+        // Delay
+        //std::this_thread::sleep_for(std::chrono::microseconds(1));     // 1MHz system takt
     }
 
     return 0;
