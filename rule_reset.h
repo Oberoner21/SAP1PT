@@ -1,3 +1,9 @@
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  rule_reset.h
+
+    Copyright(C) 2026 by Oberoner
+*/
 
 void GenerateRuleRESET(uint16_t rule) {
 

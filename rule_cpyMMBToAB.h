@@ -12,6 +12,8 @@
     Entry point     : NP pointer position bit7 of the MMB
     Exit point      : NP pointer position bit7 of the register AB
                       MMB and register A/B are remarked 
+    Rules           : Destination register A: 205
+                      Destination register B: 221
 */
 uint16_t CopyMMBToAB(uint16_t rule, bool toB = false) {
 

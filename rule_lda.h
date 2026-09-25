@@ -1,20 +1,18 @@
 /*
     SAP1PT - SAP1 Pure Turing
-    Modul:  rule_ldi.h
+    Modul:  rule_lda.h
 
     Copyright(C) 2026 by Oberoner
 */
 
-
+/*
+    Instruction rule for LDA
+    Entry conditions: No markers set.
+    Entry point     : NP pointer position I0 of Instruction Register IR
+    Exit point      : NP pointer position M0 of Memory Address Register MAR 
+    Rules           : 332 
+*/
 void GenerateRuleLDA(uint16_t rule) {
-
-    // Entrypoint: NP pointer position: I0 of Instruction Register IR
-    // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
-
-    // Mark register A
-    // Remark IR
-    // Mark MAR
-    // Seek to MMB bit 7
 
     uint8_t i, j;
 
@@ -72,5 +70,4 @@ void GenerateRuleLDA(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
-    // 331 Rules
 }

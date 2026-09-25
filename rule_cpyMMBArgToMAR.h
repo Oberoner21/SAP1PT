@@ -11,7 +11,8 @@
     Entry conditions: PC and MMB is marked
     Entry point     : NP pointer position bit7 of the MMB
     Exit point      : NP pointer position one position left from marker of the MMB. 
-                      The MMB is now remarked.  
+                      The MMB is now remarked. 
+    Rules           : 66 
 */
 uint16_t CopyMMBArgToMAR(uint16_t rule) {
 

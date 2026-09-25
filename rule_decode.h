@@ -1,3 +1,9 @@
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  rule_decode.h
+
+    Copyright(C) 2026 by Oberoner
+*/
 
 uint16_t GenerateRuleDECODE(uint16_t rule){
 

@@ -1,15 +1,18 @@
 /*
     SAP1PT - SAP1 Pure Turing
-    Modul:  rule_ldi.h
+    Modul:  rule_jmp.h
 
     Copyright(C) 2026 by Oberoner
 */
 
-
+/*
+    Instruction rule for JMP
+    Entry conditions: No markers set.
+    Entry point     : NP pointer position I0 of Instruction Register IR
+    Exit point      : NP pointer position M0 of Memory Address Register MAR 
+    Rules           : 87 
+*/
 void GenerateRuleJMP(uint16_t rule) {
-
-    // Entrypoint: NP pointer position: I0 of Instruction Register IR
-    // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
 
     //  Seek to PC and mark it
     //  Copy low nibble MMB into interleaved PC
@@ -56,5 +59,4 @@ void GenerateRuleJMP(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
-    // Rules 86
 }

@@ -1,15 +1,18 @@
 /*
     SAP1PT - SAP1 Pure Turing
-    Modul:  rule_ldi.h
+    Modul:  rule_jc.h
 
     Copyright(C) 2026 by Oberoner
 */
 
-
+/*
+    Instruction rule for JC
+    Entry conditions: No markers set.
+    Entry point     : NP pointer position I0 of Instruction Register IR
+    Exit point      : NP pointer position M0 of Memory Address Register MAR 
+    Rules           : 92 
+*/
 void GenerateRuleJC(uint16_t rule) {
-
-    // Entrypoint: NP pointer position: I0 of Instruction Register IR
-    // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
 
     // Seek to carry flag
     // If not carry -> END 
@@ -79,5 +82,4 @@ void GenerateRuleJC(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
-    // 92 Rules
 }

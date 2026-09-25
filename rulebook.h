@@ -1,5 +1,11 @@
-#include "utils.h"
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  rulebook.h
 
+    Copyright(C) 2026 by Oberoner
+*/
+
+#include "utils.h"
 
 #define     LEFT            -1
 #define     RIGHT           1

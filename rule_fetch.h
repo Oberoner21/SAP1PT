@@ -1,3 +1,9 @@
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  rule_fetch.h
+
+    Copyright(C) 2026 by Oberoner
+*/
 
 // Kopiert den Wert des Programm counters in das Memory Address Register
 uint16_t PCtoMAR(uint16_t rule){

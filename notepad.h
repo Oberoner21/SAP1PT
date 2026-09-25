@@ -1,3 +1,11 @@
+/*
+    SAP1PT - SAP1 Pure Turing
+    Modul:  notepad.h
+
+    Copyright(C) 2026 by Oberoner
+*/
+
+
 #define     NOTEPADSIZE     0x0100
 
 // Fibonacci 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233

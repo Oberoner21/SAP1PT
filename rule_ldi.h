@@ -5,11 +5,14 @@
     Copyright(C) 2026 by Oberoner
 */
 
-
+/*
+    Instruction rule for LDI
+    Entry conditions: No markers set.
+    Entry point     : NP pointer position I0 of Instruction Register IR
+    Exit point      : NP pointer position M0 of Memory Address Register MAR 
+    Rules           : 215 
+*/
 void GenerateRuleLDI(uint16_t rule) {
-
-    // Entrypoint: NP pointer position: I0 of Instruction Register IR
-    // Exitpoint : NP pointer position: M0 of Memory Address Register MAR
 
     // Mark register A
     // Remark IR
@@ -127,5 +130,4 @@ void GenerateRuleLDI(uint16_t rule) {
     rule = next$RIGHT(rule);
     SetRule(rule-1, '$', '$', LEFT, RULE_FETCH);  
 
-    // 214 Rules
 }
