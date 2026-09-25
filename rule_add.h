@@ -116,76 +116,13 @@ void GenerateRuleADD(uint16_t rule) {
     // Seek back to bit3 of MAR
     rule = next_LEFT(rule);
 
-    // ------ Mark the memory byte, addressed by register MAR ------
+    // Mark the MMB, addressed by register MAR
     rule = MarkMemoryByte(rule);
     // Change the direction of last rule to RIGHT to seek to bit7 of MMB
     SetRule(rule-1, '_', '_', RIGHT, rule);
 
-    // --------------- Copy MMR to B ----------------------
-    for(i=0; i<8; i++) {
-
-        for(j=0; j<i; j++){
- 
-            // Skip jx right in marked memory byte 
-            rule = nextRIGHT(rule);     
-        }
-
-        // Read current bit of MMB and branche
-        SetRule(rule, '0', '0', RIGHT, rule+1);
-        SetRule(rule, '1', '1', RIGHT, rule+5+i*2);
-        rule++;
-
-        // Seek left to the memory byte marker
-        rule = next_LEFT(rule, LEFT); 
-
-        // Seek to A7 of the marked register A/B 
-        rule = next_LEFT(rule);
-        // Skip right to B7
-        rule = nextRIGHT(rule);
-
-        for(j=0; j<i; j++){
- 
-            // Skip jx bit right in A/B
-            rule = nextRIGHT(rule); 
-            rule = nextRIGHT(rule); 
-        }
-
-        // Write a 0 into current bit of B
-        SetRule(rule, '0', '0', RIGHT, rule+5+i*2);
-        SetRule(rule, '1', '0', RIGHT, rule+5+i*2);
-        rule++;
-
-    
-        // Seek to memory byte marker 
-        rule = next_LEFT(rule, LEFT);
-        // Seek to the market destination register A/B
-        rule = next_LEFT(rule);
-        // Skip right to B7
-        rule = nextRIGHT(rule);
-
-        for(j=0; j<i; j++){
- 
-            // Skip jx bit right in A/B
-            rule = nextRIGHT(rule);    
-            rule = nextRIGHT(rule);   
-        }
-
-        // Write a 1 into current bit of B
-        SetRule(rule, '0', '1', RIGHT, rule+1);
-        SetRule(rule, '1', '1', RIGHT, rule+1);
-        rule++;
-        
-        // Seek back to Bit7 of the marked byte 
-        rule = next_RIGHT(rule);
-    }
-
-    // Change last rule
-    // Remark the marked memory byte
-    SetRule(rule-1, '_', '$', LEFT, rule);
-
-    // Seek back to marked register A/B and remark it
-    rule = next_LEFT(rule);
-    SetRule(rule-1, '-', '$', RIGHT, rule);
+    // copy MMR to register B
+    rule = CopyMMBToAB(rule, true);
 
     // Seek to B0
     rule = next$RIGHT(rule);
