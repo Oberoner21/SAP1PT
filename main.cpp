@@ -44,8 +44,8 @@ int main() {
 
         if(rule == RULE_END) {
             std::cout << "END state in cykle: " << cykles << std::endl;
-            std::cout << "Notepad Pointer: " << notePadPointer << std::endl; 
-            std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer]] << std::endl; 
+            std::cout << "Notepad Pointer: " << notePadPointer-1 << std::endl; 
+            std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer-1]] << std::endl; 
 
             for(int j=0; j<npSize; j++) std::cout << cSymbols[notePad[j]];
             std::cout << "\n";
@@ -57,8 +57,8 @@ int main() {
 
         if(rule == RULE_ERROR) {
             std::cout << "Go to error state in cykle: " << cykles << std::endl; 
-            std::cout << "Notepad Pointer: " << notePadPointer << std::endl;
-            std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer]] << std::endl; 
+            std::cout << "Notepad Pointer: " << notePadPointer-1 << std::endl;
+            std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer-1]] << std::endl; 
             std::cout << "Rule: " << currentRule << std::endl; 
 
             for(int j=0; j<npSize; j++) std::cout << cSymbols[notePad[j]];

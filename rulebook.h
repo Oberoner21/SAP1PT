@@ -18,8 +18,8 @@
 #define     RULE_NOP        250
 #define     RULE_LDA        300
 #define     RULE_ADD        800
-#define     RULE_SUB        1300
-#define     RULE_STA        1800
+#define     RULE_SUB        1200
+#define     RULE_STA        2000
 #define     RULE_LDI        2300
 #define     RULE_JMP        2800
 #define     RULE_JC         3000
@@ -30,6 +30,7 @@
 #define     RULE_END        4094
 #define     RULE_ERROR      4095
 
+uint16_t rule_ALU;
 
 struct rule {
     int next;
@@ -123,6 +124,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_lda.h"
 #include "rule_jmp.h"
 #include "rule_hlt.h"
+#include "rule_sub.h"
 
 
 void generateRuleBook()
@@ -144,10 +146,11 @@ void generateRuleBook()
     GenerateRuleDECODE(RULE_DECODE);
     GenerateRuleLDI(RULE_LDI);
     GenerateRuleSTA(RULE_STA);
-    GenerateRuleADD(RULE_ADD);
+    GenerateRuleADD(RULE_ADD);      // Call before GenerateRuleSUB(RULE_SUB)
     GenerateRuleJC(RULE_JC);
     GenerateRuleOUT(RULE_OUT);
     GenerateRuleLDA(RULE_LDA);
     GenerateRuleJMP(RULE_JMP);
     GenerateRuleHLT(RULE_HLT);
+    GenerateRuleSUB(RULE_SUB);
 }

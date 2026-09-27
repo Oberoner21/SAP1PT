@@ -7,7 +7,7 @@
 
 /*
     Instruction rule for ADD
-    Entry conditions: No markers set.
+    Entry conditions: IR and current MMB is marked.
     Entry point     : NP pointer position I0 of Instruction Register IR
     Exit point      : NP pointer position M0 of Memory Address Register MAR 
     Rules           : 366 
@@ -82,6 +82,7 @@ void GenerateRuleADD(uint16_t rule) {
     SetRule(rule, '1', '1', LEFT, rule+1);
     rule++;
     // 1
+    rule_ALU = rule;
     SetRule(rule, '0', '_', LEFT, rule-1);      // No Carry
     SetRule(rule, '1', '_', LEFT, rule+1);
     SetRule(rule, '$', '$', LEFT, rule+4);     // End of Add with no carry
