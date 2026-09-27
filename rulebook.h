@@ -23,9 +23,9 @@
 #define     RULE_LDI        2300
 #define     RULE_JMP        2800
 #define     RULE_JC         3000
-#define     RULE_JZ         3050
-#define     RULE_OUT        3100
-#define     RULE_HLT        3200
+#define     RULE_JZ         3200
+#define     RULE_OUT        3400
+#define     RULE_HLT        3600
 
 #define     RULE_END        4094
 #define     RULE_ERROR      4095
@@ -126,6 +126,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_jmp.h"
 #include "rule_hlt.h"
 #include "rule_sub.h"
+#include "rule_jz.h"
 
 
 void GenerateRuleBook()
@@ -154,4 +155,5 @@ void GenerateRuleBook()
     GenerateRuleJMP(RULE_JMP);
     GenerateRuleHLT(RULE_HLT);
     GenerateRuleSUB(RULE_SUB);
+    GenerateRuleJZ(RULE_JZ);
 }

@@ -7,7 +7,7 @@
 
 /*
     Instruction rule for SUB
-    Entry conditions: IR and current MMB is marked.
+    Entry conditions: IR and current MMB is marked
     Entry point     : NP pointer position I0 of Instruction Register IR
     Exit point      : NP pointer position M0 of Memory Address Register MAR 
     Rules           : 744 
@@ -49,7 +49,7 @@ void GenerateRuleSUB(uint16_t rule) {
     // Mark MR
     SetRule(rule-1, '$', '_', RIGHT, rule); 
 
-    // Seek to bit7 of the marked memory byte
+    // Seek to bit7 of the MMB
     rule = next_RIGHT(rule);
 
     // Copy low nibble of MMB into MAR
@@ -88,7 +88,7 @@ void GenerateRuleSUB(uint16_t rule) {
     SetRule(rule, '1', '1', RIGHT, rule+2);
     rule++;
 
-    // Add A + B (Twos komplement)
+    // Compute the Twos komplement
     //----------------- A + B ----------------------
 
     // 0
@@ -129,7 +129,6 @@ void GenerateRuleSUB(uint16_t rule) {
 
     // Seek to B0
     rule = next$RIGHT(rule, LEFT);
-    // Change the rule to new value of next rule -> rule_ALU
+    // Next rule -> rule_ALU
     SetRule(rule-1, '$', '$', LEFT, rule_ALU);
-
 }

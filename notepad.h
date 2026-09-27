@@ -53,16 +53,16 @@
 // };
 
 unsigned char Program[16] = {
-    // Down counter
+    // UP/Down counter
 	0x1E,			//	LDA [0xE]
 	0x3F,			//	SUB [0xF]
 	0xE0,			//	OUT
-	0x61,			//	JMP 0x1
-	0x00,
-	0x00,
-	0x00,
-	0x00,
-	0x00,
+    0x85,           //  JZ 0x5
+    0x61,           //  JMP 0x1
+	0x2F,           //  ADD [0xF]
+	0x71,           //  JC 0x1
+	0xE0,           //  OUT
+	0x65,           //  JMP 5
 	0x00,
 	0x00,
 	0x00,
@@ -72,8 +72,9 @@ unsigned char Program[16] = {
 	0x01
 };
 
-const char NPITEMS[] = (
-    "$$10$0000000000000000$00000000$0000$00000001$0000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$$$"
+const char SAP1_REGISTERS[] = (
+    // ZC A/B              Output   IR   PC       MAR
+    "$$10$0000000000000000$00000000$0000$00000001$0000"
 );
 const uint16_t npSize = 196;
 
@@ -114,15 +115,20 @@ void CopyProgram(){
 
         npPointer = npPointer + 9;
     }
+
+    // Mark the end of the memory range with $$$
+    notePad[npPointer] = 3;
+    notePad[npPointer+1] = 3;
+    notePad[npPointer+2] = 3;
 }
 
 
 void BuildNotepad()
 {
-    char npItem;
-    for(uint16_t i=0; i<npSize; i++)
+
+    for(uint16_t i=0; i<MEMSTART+1; i++)
     {
-        notePad[i] = symbol2num(NPITEMS[i]);
+        notePad[i] = symbol2num(SAP1_REGISTERS[i]);
     }
 
     CopyProgram();

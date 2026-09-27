@@ -1,32 +1,18 @@
 /*
     SAP1PT - SAP1 Pure Turing
-    Modul:  rule_jc.h
+    Modul:  rule_jz.h
 
     Copyright(C) 2026 by Oberoner
 */
 
 /*
-    Instruction rule for JC
+    Instruction rule for JZ
     Entry conditions: IR and current MMB is marked
     Entry point     : NP pointer position I0 of Instruction Register IR
     Exit point      : NP pointer position M0 of Memory Address Register MAR 
     Rules           : 92 
 */
-void GenerateRuleJC(uint16_t rule) {
-
-    // Seek to carry flag
-    // If not carry -> END 
-    // If carry
-    //  - Seek to PC and mark it
-    //  - Copy low nibble MMB into interleaved PC
-    //  - Remark PC and END
-    //  END
-    //  - Remark MMB,
-    //  - Remark IR
-    //  - Seek to MAR0
-    //  - Go to RULE_FETCH
-
-    uint8_t i, j;
+void GenerateRuleJZ(uint16_t rule) {
 
     SetRule(rule, '_', '_', LEFT, rule+1);
     SetRule(rule, '0', '0', LEFT, rule+1);
@@ -40,16 +26,20 @@ void GenerateRuleJC(uint16_t rule) {
     // Skip left A/B register
     rule = next$LEFT(rule);
 
-    // Read carry
-    SetRule(rule, '0', '0', RIGHT, rule+1);     // Carry not set
-    SetRule(rule, '1', '1', RIGHT, rule+2);     // Carry set
+    // Skip left to Z
+    rule = nextLEFT(rule);
+
+    // Read Zero flag
+    SetRule(rule, '0', '0', RIGHT, rule+1);     // Z=0
+    SetRule(rule, '1', '1', RIGHT, rule+2);     // Z=1
     rule++;
 
-    // Skip marked IR
+    // Z not set -> skip marked IR
     rule = next_RIGHT(rule);
     SetRule(rule-1, '_', '_', RIGHT, rule+82);     // <-- Jump to END !!!!
 
-    // ++++++++ Carry is set +++++++++++++
+
+    // ++++++++ Zero is set +++++++++++++
 
     // Seek to IR (the Marker is yet set)
     rule = next_RIGHT(rule);
