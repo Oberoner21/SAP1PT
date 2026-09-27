@@ -5,13 +5,15 @@
     Copyright(C) 2026 by Oberoner
 */
 
-
 #define     NOTEPADSIZE     0x0100
+#define     REG_A_START     5           // Notepad start position of register A/B
+#define     MEMSTART        49          // Notepad start position of 16 byte SAP1 Memory
+
 
 // Fibonacci 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233
 //           0x01, 0x02, 0x03, 0x05, 0x08, 0x0D, 0x15, 0x22, 0x37, 0x59, 0x90, 0xE9
 // unsigned char Program[16] = {
-    // Fibonacci
+//                     // Fibonacci
 // 	0x51,			//	LDI 0x1
 // 	0x4E,			//	STA [0xE]
 // 	0x50,			//	LDI 0x0
@@ -46,8 +48,8 @@
 // 	0x00,
 // 	0x00,
 // 	0x00,
-// 	0xFF,
-// 	0x01
+// 	0x28,
+// 	0x14
 // };
 
 unsigned char Program[16] = {
@@ -70,17 +72,14 @@ unsigned char Program[16] = {
 	0x01
 };
 
-const char npItems[] = (
-    "$$10$0000000000000000$00000000$0000$00000001$0000$01010001$01001110$01010000$00101110$01110001$01001110$01010000$00101110$01010001$01001110$01010000$00101110$01010001$01001110$01010000$01010000$$$"
+const char NPITEMS[] = (
+    "$$10$0000000000000000$00000000$0000$00000001$0000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$00000000$$$"
 );
 const uint16_t npSize = 196;
 
-int notePad[NOTEPADSIZE];
-
-const uint8_t MEMSTART = 49;    // Start position of memory in the notepad
-const uint8_t A_START = 5;      // Start position of Register A/B in the notepad
-
+uint16_t notePad[NOTEPADSIZE];
 char outBuffer[10];
+
 
 void makeOutStr() {
 
@@ -88,7 +87,7 @@ void makeOutStr() {
 
     uint8_t outValue = 0;
 
-    for(uint8_t i=A_START; i<A_START+16; i+=2) {
+    for(uint8_t i=REG_A_START; i<REG_A_START+16; i+=2) {
 
         uint8_t bit = notePad[i] - 1;
         outValue = (outValue << 1) + bit;
@@ -117,12 +116,13 @@ void CopyProgram(){
     }
 }
 
-void copyNPItems()
+
+void BuildNotepad()
 {
     char npItem;
     for(uint16_t i=0; i<npSize; i++)
     {
-        notePad[i] = symbol2num(npItems[i]);
+        notePad[i] = symbol2num(NPITEMS[i]);
     }
 
     CopyProgram();

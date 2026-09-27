@@ -112,6 +112,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_cpyMMBArgToPC.h"
 #include "rule_cpyMMBArgToMAR.h"
 #include "rule_cpyMMBToAB.h"
+#include "rule_cpyAtoMMB.h"
 
 #include "rule_reset.h"
 #include "rule_fetch.h"
@@ -127,7 +128,7 @@ uint16_t next_RIGHT(uint16_t rule, int endDirection = RIGHT){
 #include "rule_sub.h"
 
 
-void generateRuleBook()
+void GenerateRuleBook()
 {
     uint16_t rule = 0;
 

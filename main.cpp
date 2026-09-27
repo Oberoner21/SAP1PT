@@ -12,16 +12,13 @@ int notePadPointer = 0;
 int rule = 0;
 
 bool halt = false;
+int cykles = 0;
+int currentRule;
 
 int main() {
 
-    generateRuleBook();
-    copyNPItems();
-
-    int cykles = 0;
-    int currentRule;
-    notePadPointer = 0;
-    rule = 0;
+    GenerateRuleBook();
+    BuildNotepad();
 
     while(!halt){
         char symbol = notePad[notePadPointer];
