@@ -9,6 +9,7 @@
 
 #define     LEFT            -1
 #define     RIGHT           1
+#define     CLKOUT          1
 #define     RULES           0x1000
 #define     SYMBOLS         4
 
@@ -25,7 +26,7 @@
 #define     RULE_JC         3000
 #define     RULE_JZ         3200
 #define     RULE_OUT        3400
-#define     RULE_HLT        3600
+#define     RULE_HLT        3800
 
 #define     RULE_END        4094
 #define     RULE_ERROR      4095
@@ -35,17 +36,20 @@ uint16_t rule_ALU;
 struct rule {
     int next;
     int direction;
-    int writeSymbol;
+    uint8_t writeSymbol;
+    uint8_t clkOut;
 } ruleBook[RULES][SYMBOLS];
 
 
-void SetRule(int rule, unsigned char readSymbol, unsigned char writeSymbol, int direction, int nextRule){
+void SetRule(uint16_t rule, uint8_t readSymbol, uint8_t writeSymbol, int direction, 
+    int nextRule, uint8_t clkOut = 0){
 
     uint8_t numReadSymbol = symbol2num(readSymbol);
 
     ruleBook[rule][numReadSymbol].writeSymbol = symbol2num(writeSymbol);
     ruleBook[rule][numReadSymbol].direction = direction;
     ruleBook[rule][numReadSymbol].next = nextRule;
+    ruleBook[rule][numReadSymbol].clkOut = clkOut;
 }
 
 uint16_t nextLEFT(uint16_t rule){

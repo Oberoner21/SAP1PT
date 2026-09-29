@@ -7,7 +7,7 @@
 
 /*
     Instruction rule for LDA
-    Entry conditions: No markers set.
+    Entry conditions: IR and current MMB is marked
     Entry point     : NP pointer position I0 of Instruction Register IR
     Exit point      : NP pointer position M0 of Memory Address Register MAR 
     Rules           : 332 
