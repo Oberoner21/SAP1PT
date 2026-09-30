@@ -1,12 +1,11 @@
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include "symbols.h"
 #include "rulebook.h"
 #include "notepad.h"
 
 using namespace std;
-
-const char cSymbols[] = ("_01$");
 
 int notePadPointer = 0;
 int rule = 0;

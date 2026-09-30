@@ -90,7 +90,7 @@ uint16_t CopyMMBToAB(uint16_t rule, bool toB = false) {
 
     // Seek back to marked register A/B and remark it
     rule = next_LEFT(rule);
-    SetRule(rule-1, '-', '$', RIGHT, rule);
+    SetRule(rule-1, '_', '$', RIGHT, rule);
 
     return rule;
 }

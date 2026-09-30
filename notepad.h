@@ -72,6 +72,7 @@ unsigned char Program[16] = {
 	0x01
 };
 
+
 const char SAP1_REGISTERS[] = (
     // ZC A/B              Output   IR   PC       MAR
     "$$10$0000000000000000$00000000$0000$00000001$0000"
@@ -103,23 +104,23 @@ void CopyProgram(){
 
     for(uint8_t i=0; i<16; i++) {
 
-        notePad[npPointer] = 3;     // Start with $
-        notePad[npPointer+1] = Program[i] & 0x80 ? 2 : 1;
-        notePad[npPointer+2] = Program[i] & 0x40 ? 2 : 1;
-        notePad[npPointer+3] = Program[i] & 0x20 ? 2 : 1;
-        notePad[npPointer+4] = Program[i] & 0x10 ? 2 : 1;
-        notePad[npPointer+5] = Program[i] & 0x08 ? 2 : 1;
-        notePad[npPointer+6] = Program[i] & 0x04 ? 2 : 1;
-        notePad[npPointer+7] = Program[i] & 0x02 ? 2 : 1;
-        notePad[npPointer+8] = Program[i] & 0x01 ? 2 : 1;
+        notePad[npPointer] = symbol2num('$');     // Start with $
+        notePad[npPointer+1] = Program[i] & 0x80 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+2] = Program[i] & 0x40 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+3] = Program[i] & 0x20 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+4] = Program[i] & 0x10 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+5] = Program[i] & 0x08 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+6] = Program[i] & 0x04 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+7] = Program[i] & 0x02 ? symbol2num('1') : symbol2num('0');
+        notePad[npPointer+8] = Program[i] & 0x01 ? symbol2num('1') : symbol2num('0');
 
         npPointer = npPointer + 9;
     }
 
     // Mark the end of the memory range with $$$
-    notePad[npPointer] = 3;
-    notePad[npPointer+1] = 3;
-    notePad[npPointer+2] = 3;
+    notePad[npPointer] = symbol2num('$');
+    notePad[npPointer+1] = symbol2num('$'); 
+    notePad[npPointer+2] = symbol2num('$'); 
 }
 
 

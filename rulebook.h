@@ -4,8 +4,8 @@
 
     Copyright(C) 2026 by Oberoner
 */
-
-#include "utils.h"
+#pragma once
+#include "symbols.h"
 
 #define     LEFT            -1
 #define     RIGHT           1
