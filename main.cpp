@@ -43,7 +43,7 @@ int main() {
             std::cout << "Notepad Pointer: " << notePadPointer-1 << std::endl; 
             std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer-1]] << std::endl; 
 
-            for(int j=0; j<npSize; j++) std::cout << cSymbols[notePad[j]];
+            for(int j=0; j<NOTEPADSIZE; j++) std::cout << cSymbols[notePad[j]];
             std::cout << "\n";
             std::cout << "\n";
             std::cout << "\n";
@@ -57,7 +57,7 @@ int main() {
             std::cout << "Readsymbol: " << cSymbols[notePad[notePadPointer-1]] << std::endl; 
             std::cout << "Rule: " << currentRule << std::endl; 
 
-            for(int j=0; j<npSize; j++) std::cout << cSymbols[notePad[j]];
+            for(int j=0; j<NOTEPADSIZE; j++) std::cout << cSymbols[notePad[j]];
             std::cout << "\n";
             std::cout << "\n";
             std::cout << "\n";
