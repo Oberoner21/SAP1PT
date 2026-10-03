@@ -5,7 +5,7 @@
     Copyright(C) 2026 by Oberoner
 */
 
-#define     NOTEPADSIZE     196
+#define     NOTEPADSIZE     0x100       // SAP1PT Notepad size 
 #define     REG_A_START     5           // Notepad start position of register A/B
 #define     MEMSTART        49          // Notepad start position of 16 byte SAP1 Memory
 #define     EPROMSIZE       0x8000
@@ -110,7 +110,7 @@ void GenerateSAP1PTTape(){
 
     for(i=0; i<NOTEPADSIZE; i++) {
 
-        // Inizialize EPROM with 0
+        // Copy Notepad to EPRom tape
         SAP1PTTape[i] = notePad[i];
     }
 
@@ -140,21 +140,28 @@ void CopyProgram(){
         npPointer = npPointer + 9;
     }
 
-    // Mark the end of the memory range with $$$
-    notePad[npPointer] = symbol2num('$');
-    notePad[npPointer+1] = symbol2num('$'); 
-    notePad[npPointer+2] = symbol2num('$'); 
+    // Mark the end of Notepad
+    notePad[NOTEPADSIZE-1] = symbol2num('$');
+    notePad[NOTEPADSIZE-2] = symbol2num('$');
+    notePad[NOTEPADSIZE-3] = symbol2num('$');
 }
 
 
 void BuildNotepad()
 {
+    uint16_t i;
 
-    for(uint16_t i=0; i<MEMSTART+1; i++)
+    // Clear the Notepad
+    for(i=0; i<NOTEPADSIZE; i++)
+    {
+        notePad[i] = 0;
+    }
+
+    for(i=0; i<MEMSTART+1; i++)
     {
         notePad[i] = symbol2num(SAP1_REGISTERS[i]);
     }
 
     CopyProgram();
-    //GenerateSAP1PTTape();
+    GenerateSAP1PTTape();
 }
